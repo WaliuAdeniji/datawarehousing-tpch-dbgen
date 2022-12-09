@@ -3,7 +3,6 @@ terraform {
   backend "gcs" {
     bucket  = "tpch_terraform_state"
     prefix  = "terraform/state"
-    project = "tpch-dbgen-367914"
   }
 
   required_providers {
