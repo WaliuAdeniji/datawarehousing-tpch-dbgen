@@ -62,8 +62,8 @@ x-airflow-common:
     AIRFLOW_CONN_GOOGLE_CLOUD_DEFAULT: 'google-cloud-platform://?extra__google_cloud_platform__key_path=/.google/credentials/google_credentials.json'
     # TODO: Please change GCP_PROJECT_ID & GCP_GCS_BUCKET, as per your config
   
-    GCP_PROJECT_ID: 
-    GCP_GCS_BUCKET: 
+    GCP_PROJECT_ID: tpch-dbgen-367914
+    GCP_GCS_BUCKET: tpch_dbgen_367914_data-lake
 
   volumes:
     - ./dags:/opt/airflow/dags

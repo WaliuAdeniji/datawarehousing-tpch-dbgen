@@ -20,7 +20,7 @@ URL_TEMPLATE = (
     "blob/master/data.zip?raw=true"
 )
 OUTPUT_FILE_TEMPLATE = AIRFLOW_HOME + DOWNLOADED_FILE
-BIGQUERY_DATASET = os.environ.get("BIGQUERY_DATASET", "tpch_benchmark")
+BIGQUERY_DATASET = os.environ.get("BIGQUERY_DATASET", "tpch_dbgen_367914_all_data")
 DELETE_DOWNLOADED_DATASET = AIRFLOW_HOME + "*.tbl"
 DELETE_TRANSFORMED_DATASET = AIRFLOW_HOME + "*.parquet"
 
