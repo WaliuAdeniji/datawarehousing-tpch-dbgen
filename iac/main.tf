@@ -1,10 +1,11 @@
 terraform {
   required_version = ">= 1.0"
   backend "gcs" {
-    bucket  = var.state_bucket
+    bucket  = "tpch_terraform_state"
     prefix  = "terraform/state"
+    project = "tpch-dbgen-367914"
   }
-  
+
   required_providers {
     google = {
       source = "hashicorp/google"
