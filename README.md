@@ -1,0 +1,1 @@
+![Tests](https://github.com/WaliuAdeniji/datawarehousing-tpch-dbgen/actions/workflows/tests.yaml/badge.svg)
