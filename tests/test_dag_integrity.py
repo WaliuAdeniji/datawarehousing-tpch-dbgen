@@ -1,41 +1,20 @@
-"""Test the validity of all DAGs."""
-import glob
-from os import path
-
+import os
+import sys
 import pytest
-from airflow import models as airflow_models
-from airflow.utils.dag_cycle_tester import check_cycle
+from airflow.models import DagBag
+sys.path.append(os.path.join(os.path.dirname(__file__), "../dags"))
+sys.path.append(os.path.join(os.path.dirname(__file__), "../dags/utilities"))
 
-DAG_PATHS = glob.glob(
-    path.join(path.dirname(__file__),"..", "src/dags", "*benchmark_dataset.py")
-)
 
-print(DAG_PATHS)
+@pytest.fixture(params=["..src/dags/benchmark_dataset"])
+def dag_bag(request):
+    return DagBag(dag_folder=request.param, include_examples=False)
 
-@pytest.mark.parametrize("dag_path", DAG_PATHS)
-def test_dag_integrity(dag_path):
-    """Import DAG files and check for a valid DAG instance."""
 
-    def _import_file(module_name, module_path):
-        import importlib.util
+def test_no_import_errors(dag_bag):
+    assert not dag_bag.import_errors
 
-        spec = importlib.util.spec_from_file_location(module_name, str(module_path))
-        module = importlib.util.module_from_spec(spec)
-        spec.loader.exec_module(module)
-        return module
 
-    dag_name = path.basename(dag_path)
-    module = _import_file(dag_name, dag_path)
-
-    "Validate if there is at least 1 DAG object in the file"
-    dag_objects = [
-        var for var in vars(module).values() if isinstance(var, airflow_models.DAG)
-    ]
-    assert dag_objects
-
-    def check_cycle(dag_path):
-        """
-        Check to see if there are any cycles in the DAG.
-        Returns False if no cycle found,
-        otherwise raises exception.
-        """
+def test_requires_tags(dag_bag):
+    for dag_id, dag in dag_bag.dags.items():
+        assert dag.tags

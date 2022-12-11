@@ -1,6 +1,6 @@
 import os
-from dags.transform_dataset import format_dataset_and_save_locally
-from dags.transform_dataset import generate_facts_and_dimension_table
+from transform_dataset import format_dataset_and_save_locally
+from transform_dataset import generate_facts_and_dimension_table
 from airflow import DAG
 from airflow.utils.dates import days_ago
 from airflow.operators.bash import BashOperator
@@ -14,16 +14,9 @@ from airflow.providers.google.cloud.operators.bigquery import (
 PROJECT_ID = os.environ.get("GCP_PROJECT_ID")
 BUCKET = os.environ.get("GCP_GCS_BUCKET")
 AIRFLOW_HOME = os.environ.get("AIRFLOW_HOME", "/opt/airflow/")
-DOWNLOADED_FILE = "data.zip"
-URL_TEMPLATE = (
-    "https://github.com/WaliuAdeniji/datawarehousing-tpch-dbgen/"
-    "blob/master/data.zip?raw=true"
-)
-OUTPUT_FILE_TEMPLATE = AIRFLOW_HOME + DOWNLOADED_FILE
 BIGQUERY_DATASET = os.environ.get("BIGQUERY_DATASET", "tpch_dbgen_367914_all_data")
-DELETE_DOWNLOADED_DATASET = AIRFLOW_HOME + "*.tbl"
-DELETE_TRANSFORMED_DATASET = AIRFLOW_HOME + "*.parquet"
-
+DELETE_DOWNLOADED_DATASET = AIRFLOW_HOME + "/*.tbl"
+DELETE_TRANSFORMED_DATASET = AIRFLOW_HOME + "/*.parquet"
 
 RAW_FILES = [
     "customer.tbl",
@@ -41,7 +34,8 @@ CLEAN_FILES = [
     "df_supplier.parquet",
     "df_nation.parquet",
     "df_region.parquet",
-    "df_part.parquet" "df_partsupp.parquet",
+    "df_part.parquet",
+    "df_partsupp.parquet",
     "df_orders.parquet",
     "df_lineitem.parquet",
 ]
@@ -93,14 +87,14 @@ def multi_copy_starschema_files_to_gcs(**kwargs):
 
 default_args = {
     "owner": "airflow",
-    "start_date": days_ago(1),
+    "start_date": days_ago(0),
     "depends_on_past": False,
     "retries": 1,
 }
 
 # NOTE: DAG declaration - using a Context Manager (an implicit way)
 with DAG(
-    dag_id="tpch_dbgen_gcs_dag",
+    dag_id="tpch_dbgen_dag",
     schedule_interval="@daily",
     default_args=default_args,
     catchup=False,
@@ -109,17 +103,19 @@ with DAG(
 ) as dag:
 
     with TaskGroup(
-        "extract_unzip_test_upload_rawdata_to_gcs"
+        "extract_unzip_upload_rawdata_to_gcs"
     ) as extract_unzip_test_upload_rawdata_to_gcs:
 
         download_dataset_task = BashOperator(
             task_id="download_dataset_task",
-            bash_command=f"curl -sSL {URL_TEMPLATE} > {OUTPUT_FILE_TEMPLATE}",
-        )
-
-        unzip_dataset_task = BashOperator(
-            task_id="unzip_dataset_task",
-            bash_command=f"unzip {OUTPUT_FILE_TEMPLATE}",
+            bash_command=f"curl -o {AIRFLOW_HOME}/customer.tbl https://raw.githubusercontent.com/WaliuAdeniji/datawarehousing-tpch-dbgen/master/datasets/customer.tbl;\
+                           curl -o {AIRFLOW_HOME}/supplier.tbl https://raw.githubusercontent.com/WaliuAdeniji/datawarehousing-tpch-dbgen/master/datasets/supplier.tbl;\
+                           curl -o {AIRFLOW_HOME}/nation.tbl https://raw.githubusercontent.com/WaliuAdeniji/datawarehousing-tpch-dbgen/master/datasets/nation.tbl;\
+                           curl -o {AIRFLOW_HOME}/region.tbl https://raw.githubusercontent.com/WaliuAdeniji/datawarehousing-tpch-dbgen/master/datasets/region.tbl;\
+                           curl -o {AIRFLOW_HOME}/part.tbl https://raw.githubusercontent.com/WaliuAdeniji/datawarehousing-tpch-dbgen/master/datasets/part.tbl;\
+                           curl -o {AIRFLOW_HOME}/partsupp.tbl https://raw.githubusercontent.com/WaliuAdeniji/datawarehousing-tpch-dbgen/master/datasets/partsupp.tbl;\
+                           curl -o {AIRFLOW_HOME}/orders.tbl https://raw.githubusercontent.com/WaliuAdeniji/datawarehousing-tpch-dbgen/master/datasets/orders.tbl;\
+                           curl -o {AIRFLOW_HOME}/lineitem.tbl https://raw.githubusercontent.com/WaliuAdeniji/datawarehousing-tpch-dbgen/master/datasets/lineitem.tbl",
         )
 
         upload_raw_data_to_gcs_task = PythonOperator(
@@ -127,7 +123,7 @@ with DAG(
             python_callable=multi_copy_raw_data_to_gcs,
         )
 
-        (download_dataset_task >> unzip_dataset_task >> upload_raw_data_to_gcs_task)
+        (download_dataset_task >> upload_raw_data_to_gcs_task)
 
     with TaskGroup(
         "transform_and_upload_cleandata_to_gcs"
@@ -143,11 +139,6 @@ with DAG(
             python_callable=multi_copy_clean_data_to_gcs,
         )
 
-        remove_local_zipped_file_task = BashOperator(
-            task_id="remove_local_zipped_file_task",
-            bash_command=f"rm {OUTPUT_FILE_TEMPLATE}",
-        )
-
         remove_downloaded_dataset_task = BashOperator(
             task_id="remove_downloaded_dataset_task",
             bash_command=f"rm {DELETE_DOWNLOADED_DATASET}",
@@ -161,7 +152,6 @@ with DAG(
         (
             transform_and_save_locally_task
             >> upload_clean_data_to_gcs_task
-            >> remove_local_zipped_file_task
             >> remove_downloaded_dataset_task
             >> remove_transformed_dataset_task
         )
