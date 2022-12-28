@@ -11,5 +11,5 @@ The capabilites served by subfolders are as follow:
 |Schedule-Query   | Automated query for data quality checks|
 |iac              | Cloud resources using Workload Federated Authority and Terraform| 
 |src              | ETL project setup for Airflow and Spark using Docker|
-|tests            | DAG Integrity test for pipeline|
+|tests            | DAG Integrity test for data pipeline|
 
