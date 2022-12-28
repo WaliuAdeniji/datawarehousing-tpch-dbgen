@@ -4,10 +4,12 @@ This project is about creating a datawarehouse for TPC-H benchmark dataset. TPC-
 
 The capabilites served by subfolders are as follow:
 
-.github/workflows: CI/CD with Github Action
-SQL-Analysis: images of SQL query using BigQuery
-Schedule-Query: Automated query for data quality checks
-iac: Cloud resources using Workload Federated Authority and Terraform 
-src: ETL project setup for Airflow and Spark using Docker
-tests: DAG Integrity test for pipeline
+|Subfolders       | Capabilities|
+|:----------------|:------------|
+|.github/workflows| CI/CD with Github Action|
+|SQL-Analysis     | Images of SQL query using BigQuery|
+|Schedule-Query   | Automated query for data quality checks|
+|iac              | Cloud resources using Workload Federated Authority and Terraform| 
+|src              | ETL project setup for Airflow and Spark using Docker|
+|tests            | DAG Integrity test for pipeline|
 
