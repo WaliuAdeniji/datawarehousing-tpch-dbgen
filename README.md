@@ -15,3 +15,6 @@ The capabilites served by subfolders are as follow:
 
 ## ER Diagram
 ![ER Diagram](https://raw.githubusercontent.com/WaliuAdeniji/datawarehousing-tpch-dbgen/master/images/erd.png)
+
+## Dimension Model
+![Model](https://raw.githubusercontent.com/WaliuAdeniji/datawarehousing-tpch-dbgen/master/images/dimension_model.png)
