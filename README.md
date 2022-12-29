@@ -7,7 +7,7 @@ The capabilites served by subfolders are as follow:
 |Subfolders       | Capabilities|
 |:----------------|:------------|
 |.github/workflows| CI/CD with Github Action|
-|SQL-Analysis     | Images of SQL query using BigQuery|
+|SQL-Analysis     | Images of SQL queries using BigQuery|
 |Schedule-Query   | Automated query for data quality checks|
 |iac              | Cloud resources using Workload Federated Authority and Terraform| 
 |src              | ETL project setup for Airflow and Spark using Docker|
