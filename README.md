@@ -13,3 +13,6 @@ The capabilites served by subfolders are as follow:
 |src              | ETL project setup for Airflow and Spark using Docker|
 |tests            | DAG Integrity test for data pipeline|
 
+## ER Diagram
+![ER Diagram][ERD]
+[ERD]: https://github.com/WaliuAdeniji/datawarehousing-tpch-dbgen/blob/master/images/erd.png
