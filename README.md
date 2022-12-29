@@ -11,7 +11,7 @@ The capabilites served by subfolders are as follow:
 |Schedule-Query   | Automated query for data quality checks|
 |iac              | Setup cloud resources using Workload Federated Authority and Terraform| 
 |src              | ETL project setup for Airflow and Spark using Docker|
-|tests            | DAG Integrity test and code formatting for data pipeline|
+|tests            | DAG Integrity test for data pipeline and code formatting|
 
 ## ER Diagram
 ![ER Diagram](https://raw.githubusercontent.com/WaliuAdeniji/datawarehousing-tpch-dbgen/master/images/erd.png)
