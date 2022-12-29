@@ -14,5 +14,4 @@ The capabilites served by subfolders are as follow:
 |tests            | DAG Integrity test for data pipeline|
 
 ## ER Diagram
-![ER Diagram][ERD]
-[ERD]: https://github.com/WaliuAdeniji/datawarehousing-tpch-dbgen/blob/master/images/erd.png
+![ER Diagram](https://raw.githubusercontent.com/WaliuAdeniji/datawarehousing-tpch-dbgen/master/images/erd.png)
